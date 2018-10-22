@@ -10,7 +10,7 @@ int readingLeft=0,readingRight=0;
 int main()
 {
 	init();
-                turnTo(0);
+        turnTo(0);
 	controlLeft(FORWARD,10);
 	controlRight(FORWARD,10);
 	

@@ -1,4 +1,4 @@
-﻿#include <cstdlib>
+﻿﻿#include <cstdlib>
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -13,7 +13,7 @@
 #define PREFER_DELTA 0.09
 #define PREFER_ANGLE_DELTA 0.09
 #define ANGLE 10
-#define BIG_ANGLE 20
+#define BIGANGLE 15
 
 //Uncomment this line at run-time to skip GUI rendering
 #define _DEBUG
@@ -36,26 +36,20 @@ const int REC_HEIGHT = 500;
 
 void adjust(float theta1,float theta2){
 	float sum = theta1+theta2;
-	if(sum<PI-PREFER_ANGLE_DELTA){
+        clog<<theta1<<" "<<theta2<<" "<<sum<<"\n";
+        if (theta1 == 0){
+		turnTo(-BIGANGLE);
+                clog<<"a"<<"\n";
+	}else if (theta2 == 0){
+		turnTo(BIGANGLE);
+                clog<<"b"<<"\n";
+	}else if(sum<PI-PREFER_ANGLE_DELTA){
+                clog<<"c"<<"\n";
 		turnTo(-ANGLE);
-		delay(100);
-		turnTo(0);
 	}
-
 	else if(sum>PI+PREFER_ANGLE_DELTA){
 		turnTo(ANGLE);
-		delay(100);
-		turnTo(0);
-	}
-	else if (theta1 == 0){
-		turnTo(-BIGANGLE);
-		delay(100);
-		turnTo(0);
-	}
-	else if (theta2 == 0){
-		turnTo(BIGANGLE);
-		delay(100);
-		turnTo(0);
+                clog<<"d"<<"\n";
 	}
 
 }
@@ -63,7 +57,7 @@ void adjust(float theta1,float theta2){
 int main()
 
 {
-                init();
+        init();
 	VideoCapture capture(CAM_PATH);
 	//If this fails, try to open as a video camera, through the use of an integer param
 	if (!capture.isOpened())
