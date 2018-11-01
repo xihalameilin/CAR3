@@ -13,7 +13,7 @@
 #define PREFER_DELTA 0.09
 #define PREFER_ANGLE_DELTA 0.09
 #define ANGLE 10
-#define BIGANGLE 15
+#define BIGANGLE 20
 
 //Uncomment this line at run-time to skip GUI rendering
 #define _DEBUG
@@ -28,47 +28,35 @@ const string CANNY_WINDOW_NAME = "Canny";
 
 const int CANNY_LOWER_BOUND = 50;
 const int CANNY_UPPER_BOUND = 250;
-const int HOUGH_THRESHOLD = 150;
+const int HOUGH_THRESHOLD = 100;
 
 const int REC_WIDTH = 500;
 const int REC_HEIGHT = 500;
 
 
-void adjust(float theta1,float theta2){
-	float sum = theta1+theta2;
-        clog<<theta1<<" "<<theta2<<" "<<sum<<"\n";
-        if (theta1 == 0){
+void adjust(float theta1, float theta2){
+	float sum = theta1 + theta2;
+	clog << theta1 << " " << theta2 << " " << sum << "\n";
+	if (theta1 == 0){
 		turnTo(-BIGANGLE);
-                clog<<"a"<<"\n";
-	}else if (theta2 == 0){
+		delay(100);
+	}
+	else if (theta2 == 0){
 		turnTo(BIGANGLE);
-                clog<<"b"<<"\n";
-	}else if(sum<PI-PREFER_ANGLE_DELTA){
-                clog<<"c"<<"\n";
-		turnTo(-ANGLE);
+		delay(100);
 	}
-	else if(sum>PI+PREFER_ANGLE_DELTA){
-		turnTo(ANGLE);
-                clog<<"d"<<"\n";
-	}
-
 }
 
 int main()
 
 {
-        init();
+	init();
 	VideoCapture capture(CAM_PATH);
 	//If this fails, try to open as a video camera, through the use of an integer param
 	if (!capture.isOpened())
 	{
 		capture.open(atoi(CAM_PATH.c_str()));
 	}
-
-
-	//init初始化
-
-
 	double dWidth = capture.get(CV_CAP_PROP_FRAME_WIDTH);			//the width of frames of the video
 	double dHeight = capture.get(CV_CAP_PROP_FRAME_HEIGHT);		//the height of frames of the video
 	//采集摄像头
@@ -107,40 +95,40 @@ int main()
 
 
 
-			float theta1 = 0;
-			float theta2 = 0;
+		float theta1 = 0;
+		float theta2 = 0;
 
 
-			for (vector<Vec2f>::const_iterator it = lines.begin(); it != lines.end(); ++it)
-			{
-				float rho = (*it)[0];			//First element is distance rho
-				float theta = (*it)[1];		//Second element is angle theta
+		for (vector<Vec2f>::const_iterator it = lines.begin(); it != lines.end(); ++it)
+		{
+			float rho = (*it)[0];			//First element is distance rho
+			float theta = (*it)[1];		//Second element is angle theta
 
-				//Filter to remove vertical and horizontal lines,
-				//and atan(0.09) equals about 5 degrees.
-
-
-				//水平的线
-				if(PI/2-PREFER_DELTA<theta&&theta<PI/2+PREFER_DELTA){
-					continue;
-				}
-				else {
-					if (rho > 0)
-						theta1 = theta;
-					else if (rho < 0)
-						theta2 = theta;
+			//Filter to remove vertical and horizontal lines,
+			//and atan(0.09) equals about 5 degrees.
 
 
-					//画图
-					Point pt1(rho / cos(theta), 0);
-					Point pt2((rho - result.rows * sin(theta)) / cos(theta), result.rows);
-					line(result, pt1, pt2, Scalar(0, 255, 255), 3, CV_AA);
-				}
-#ifdef _DEBUG
-				clog << "Line: (" << rho << "," << theta << ")\n";
-#endif
+			//水平的线
+			if (PI / 2 - PREFER_DELTA < theta&&theta<PI / 2 + PREFER_DELTA){
+				continue;
 			}
-			adjust(theta1, theta2);
+			else {
+				if (rho > 0)
+					theta1 = theta;
+				else if (rho < 0)
+					theta2 = theta;
+
+
+				//画图
+				Point pt1(rho / cos(theta), 0);
+				Point pt2((rho - result.rows * sin(theta)) / cos(theta), result.rows);
+				line(result, pt1, pt2, Scalar(0, 255, 255), 3, CV_AA);
+			}
+#ifdef _DEBUG
+			clog << "Line: (" << rho << "," << theta << ")\n";
+#endif
+		}
+		adjust(theta1, theta2);
 #ifdef _DEBUG
 		stringstream overlayedText;
 		overlayedText << "Lines: " << lines.size();
