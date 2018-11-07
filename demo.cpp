@@ -11,8 +11,8 @@ int main()
 {
 	init();
 	turnTo(0);
-	controlLeft(FORWARD, 6);
-	controlRight(FORWARD, 6);
+	controlLeft(FORWARD,8);
+	controlRight(FORWARD, 8);
 	double distance = 0;
 
 	while (1)
@@ -31,14 +31,14 @@ int main()
 		printf("Left wheel moved %.2lf cm, right wheel moved %.2lf cm in last second.\n", distanceLeft / 10, distanceRight / 10);
 		distance = distance + distanceLeft;
 		if (distanceLeft > distanceRight){
-			controlLeft(FORWARD, 4);
-			controlRight(FORWARD, 6);
+			controlLeft(FORWARD, 6);
+			controlRight(FORWARD, 8);
 		}
 		else if (distanceLeft < distanceRight){
+			controlLeft(FORWARD, 8);
 			controlLeft(FORWARD, 6);
-			controlLeft(FORWARD, 4);
 		}
-		if (distance >= 1700){
+		if (distance >= 16000){
 			break;
 		}
 	}

@@ -13,7 +13,7 @@
 #define PREFER_DELTA 0.09
 #define PREFER_ANGLE_DELTA 0.09
 #define ANGLE 10
-#define BIGANGLE 20
+#define BIGANGLE 15
 
 //Uncomment this line at run-time to skip GUI rendering
 #define _DEBUG
@@ -28,7 +28,7 @@ const string CANNY_WINDOW_NAME = "Canny";
 
 const int CANNY_LOWER_BOUND = 50;
 const int CANNY_UPPER_BOUND = 250;
-const int HOUGH_THRESHOLD = 100;
+const int HOUGH_THRESHOLD = 80;
 
 const int REC_WIDTH = 500;
 const int REC_HEIGHT = 500;
@@ -39,11 +39,12 @@ void adjust(float theta1, float theta2){
 	clog << theta1 << " " << theta2 << " " << sum << "\n";
 	if (theta1 == 0){
 		turnTo(-BIGANGLE);
-		delay(100);
+		delay(75);
 	}
 	else if (theta2 == 0){
 		turnTo(BIGANGLE);
-		delay(100);
+		delay(60);
+                turnTo(0);
 	}
 }
 
